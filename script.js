@@ -3,7 +3,9 @@ let mapSizeX;
 
 //stats
 let wins = 0
-let growSize = 100;
+let originGrowSize = 50
+let originUPGAmount = 1
+let growSize = 4;
 let growUPGAmount = 5
 let growUPGRatio = 0.25
 let moveAmount = 4;
@@ -28,10 +30,11 @@ let rectRangeY2;
 //circle setup
 circleSpreadCoverage = 300;
 circleSpread = 0;
-circleAmount = 200
+circleAmount = 300
 circlesSetup = []
 
 function setup() {
+  //localStorage.clear()
   if (localStorage.getItem("wins") !== null) {
     wins = Number(localStorage.getItem("wins"));
   }
@@ -39,7 +42,7 @@ function setup() {
     moveAmount = Number(localStorage.getItem("moveAmount"));
   }
   if (localStorage.getItem("growSize") !== null) {
-    growSize = Number(localStorage.getItem("growSize"));
+    originGrowSize = Number(localStorage.getItem("growSize"));
   }
   if (localStorage.getItem("rectSize") !== null) {
     rectSize = Number(localStorage.getItem("rectSize"));
@@ -70,8 +73,11 @@ function setup() {
   //7.DriftX
   //8.DriftY
   
-  growUPGAmount = (growSize / circleAmount) * growUPGRatio
-  growSize = growSize / circleAmount
+  circleSpreadCoverage = mapSizeX / 2.5
+  
+  originUPGAmount = originGrowSize * growUPGRatio
+  growSize = originGrowSize / circleAmount
+  growUPGAmount = growSize * growUPGRatio  
   
   speedUPGAmount = moveAmount * speedUPGRatio
   
@@ -198,6 +204,7 @@ function speedUPG() {
 function sizeUPG() {
   if (wins >= 1) {
     growSize += growUPGAmount
+    originGrowSize += originUPGAmount
     wins -= 1
   }
 }
@@ -206,20 +213,20 @@ function saveProgress() {
   localStorage.setItem("wins", wins);
   localStorage.setItem("rectSize", rectSize);
   localStorage.setItem("moveAmount", moveAmount);
-  localStorage.setItem("growSize", growSize);
+  localStorage.setItem("growSize", originGrowSize);
 }
 
 function texts() {
   textSize(15)
-  text("Size " + str(rectSize) , 10, 25)
-  text("Wins " + str(wins) , 10, 50)
-  text("Grow Amount " + str(growSize) , 10, 75)
-  text("Speed " + str(moveAmount) , 10, 100)
+  text("Size " + str(round(rectSize)) , 10, 25)
+  text("Wins " + str(round(wins)) , 10, 50)
+  text("Grow Amount " + str(round(growSize, 2)) , 10, 75)
+  text("Speed " + str(round(moveAmount)) , 10, 100)
 }
 
 function draw() {
   background(220);
-  
+  print(circleAmount)
   for (let i = 0; i < circleAmount; i++) {
   moveBack(i)
   fill("green")
